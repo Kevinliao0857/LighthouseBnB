@@ -1,4 +1,4 @@
--- -- My way works too
+-- -- My way works too, cleaner too
 -- SELECT properties.id, title, cost_per_night, start_date, AVG(property_reviews.rating) as average_rating
 -- FROM properties
 -- JOIN reservations ON properties.id = reservations.property_id
