@@ -9,25 +9,19 @@ const pool = new Pool({
   database: 'lightbnb'
 });
 
-/// Users
+
+
+
+
+
+/************************* GET EMAIL, USER ID AND ADDING USERS ******************************/
 
 /**
  * Get a single user from the database given their email.
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-// const getUserWithEmail = function(email) {
-//   let user;
-//   for (const userId in users) {
-//     user = users[userId];
-//     if (user.email.toLowerCase() === email.toLowerCase()) {
-//       break;
-//     } else {
-//       user = null;
-//     }
-//   }
-//   return Promise.resolve(user);
-// }
+
 
 const getUserWithEmail = function(email) {
   return pool.query(` 
@@ -42,17 +36,11 @@ WHERE email = $1;
 }
 exports.getUserWithEmail = getUserWithEmail;
 
-
-
-
 /**
  * Get a single user from the database given their id.
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-// const getUserWithId = function(id) {
-//   return Promise.resolve(users[id]);
-// }
 
 const getUserWithId = function(id) {
 return pool.query(` 
@@ -64,18 +52,12 @@ WHERE id = $1;
 }
 exports.getUserWithId = getUserWithId;
 
-
 /**
  * Add a new user to the database.
  * @param {{name: string, password: string, email: string}} user
  * @return {Promise<{}>} A promise to the user.
  */
-// const addUser =  function(user) {
-//   const userId = Object.keys(users).length + 1;
-//   user.id = userId;
-//   users[userId] = user;
-//   return Promise.resolve(user);
-// }
+
 const addUser =  function(user) {
   return pool.query(` 
   INSERT INTO users (name, email, password)
@@ -86,16 +68,18 @@ const addUser =  function(user) {
 }
 exports.addUser = addUser;
 
-/// Reservations
 
+
+
+
+
+/************************************* Reservations *****************************************/
 /**
  * Get all reservations for a single user.
  * @param {string} guest_id The id of the user.
  * @return {Promise<[{}]>} A promise to the reservations.
  */
-// const getAllReservations = function(guest_id, limit = 10) {
-//   return getAllProperties(null, 2);
-// }
+
 
 const getAllReservations = function(guest_id, limit = 10) {
   return pool.query(` 
@@ -113,12 +97,13 @@ const getAllReservations = function(guest_id, limit = 10) {
 }
 exports.getAllReservations = getAllReservations;
 
-/// Properties
 
 
 
 
 
+
+/***************************************** PROPERTIES SEARCH, LISTING, ADD ******************************************/
 /**
  * Get all properties.
  * @param {{}} options An object containing query options.
@@ -126,29 +111,6 @@ exports.getAllReservations = getAllReservations;
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 
-// // ORIGINAL 
-// const getAllProperties = function(options, limit = 10) {
-//   const limitedProperties = {};
-//   for (let i = 1; i <= limit; i++) {
-//     limitedProperties[i] = properties[i];
-//   }
-//   return Promise.resolve(limitedProperties);
-// }
-
-// // QUERY VERSION MK1
-// const getAllProperties = function(options, limit = 10) {
-//   return pool.query(` 
-// SELECT properties.*, AVG(property_reviews.rating) as average_rating
-// FROM properties
-// JOIN property_reviews ON properties.id = property_reviews.property_id
-// GROUP BY properties.id
-// LIMIT $1;
-//   `, [limit])
-//   .then(res => res.rows);
-// }
-
-
-// QUERY VERSION MK2
 const getAllProperties = function(options, limit = 10) {
   // 1
   const queryParams = [];
@@ -211,12 +173,6 @@ exports.getAllProperties = getAllProperties;
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
-// const addProperty = function(property) {
-//   const propertyId = Object.keys(properties).length + 1;
-//   property.id = propertyId;
-//   properties[propertyId] = property;
-//   return Promise.resolve(property);
-// }
 
 const addProperty = function(property) {
   return pool.query(` 
@@ -227,13 +183,3 @@ const addProperty = function(property) {
     .then(res => res.rows[0]);
 }
 exports.addProperty = addProperty;
-
-
-
-// SELECT properties.*, avg(property_reviews.rating) as average_rating
-//   FROM properties
-//   LEFT JOIN property_reviews ON properties.id = property_reviews.property_id
-//   WHERE properties.owner_id = 4 
-//   GROUP BY properties.id
-//   ORDER BY cost_per_night
-//   LIMIT 20;
