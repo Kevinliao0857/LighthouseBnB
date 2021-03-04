@@ -157,7 +157,7 @@ const getAllProperties = function(options, limit = 10) {
   let queryString = `
   SELECT properties.*, avg(property_reviews.rating) as average_rating
   FROM properties
-  JOIN property_reviews ON properties.id = property_id
+  LEFT JOIN property_reviews ON properties.id = property_reviews.property_id
   WHERE 1 = 1
   `;
 
@@ -168,7 +168,7 @@ const getAllProperties = function(options, limit = 10) {
   }
 
   if (options.owner_id) {
-    queryParams.push(`%${options.owner_id}`);
+    queryParams.push(`${options.owner_id}`);
     queryString += `AND owner_id = $${queryParams.length} `;
   }
 
@@ -227,3 +227,13 @@ const addProperty = function(property) {
     .then(res => res.rows[0]);
 }
 exports.addProperty = addProperty;
+
+
+
+// SELECT properties.*, avg(property_reviews.rating) as average_rating
+//   FROM properties
+//   LEFT JOIN property_reviews ON properties.id = property_reviews.property_id
+//   WHERE properties.owner_id = 4 
+//   GROUP BY properties.id
+//   ORDER BY cost_per_night
+//   LIMIT 20;
